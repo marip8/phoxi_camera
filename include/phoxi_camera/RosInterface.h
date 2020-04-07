@@ -166,6 +166,7 @@ namespace phoxi_camera {
         ros::Publisher rawTexturePub;
         ros::Publisher rgbTexturePub;
         ros::Publisher depthMapPub;
+        ros::Publisher coordFrameLocationPub;
 
         //dynamic reconfigure
         boost::recursive_mutex dynamicReconfigureMutex;

@@ -3,6 +3,16 @@
 //
 
 #include "phoxi_camera/RosInterface.h"
+#include <geometry_msgs/TransformStamped.h>
+
+namespace
+{
+Eigen::Vector3d toEigen(const pho::api::Point3_64f &in)
+{
+  return Eigen::Vector3d(in.x, in.y, in.z);
+}
+
+} // namespace anonymous
 
 namespace phoxi_camera {
     RosInterface::RosInterface() : nh("~"), dynamicReconfigureServer(dynamicReconfigureMutex, nh),
@@ -46,6 +56,7 @@ namespace phoxi_camera {
         rawTexturePub = nh.advertise<sensor_msgs::Image>("texture", topic_queue_size, latch_topics);
         rgbTexturePub = nh.advertise<sensor_msgs::Image>("rgb_texture", topic_queue_size, latch_topics);
         depthMapPub = nh.advertise<sensor_msgs::Image>("depth_map", topic_queue_size, latch_topics);
+        coordFrameLocationPub = nh.advertise<geometry_msgs::TransformStamped>("camera_transform", 1, latch_topics);
 
         //set diagnostic Hw id
         diagnosticUpdater.setHardwareID("none");
@@ -313,6 +324,20 @@ namespace phoxi_camera {
         header.stamp = timeNow;
         header.frame_id = frameId;
         header.seq = frame->Info.FrameIndex;
+
+        Eigen::Isometry3d transform;
+        transform.matrix().row(0).head<3>() = toEigen(frame->Info.SensorXAxis);
+        transform.matrix().row(1).head<3>() = toEigen(frame->Info.SensorYAxis);
+        transform.matrix().row(2).head<3>() = toEigen(frame->Info.SensorZAxis);
+        transform.matrix().row(3).head<3>() = toEigen(frame->Info.SensorPosition);
+        transform = transform.inverse();
+
+        geometry_msgs::TransformStamped transform_msg;
+        transform_msg.header = header;
+        transform_msg.child_frame_id = "coord_frame";
+        tf::transformEigenToMsg(transform, transform_msg.transform);
+        coordFrameLocationPub.publish(transform_msg);
+
 
         if (frame->PointCloud.Empty()) {
             ROS_WARN("Empty point cloud!");
