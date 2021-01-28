@@ -1,0 +1,27 @@
+name: Xenial-Build
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  schedule:
+    - cron: '0 0 * * 0'
+
+jobs:
+  industrial_ci:
+    name: Kinetic
+    runs-on: ubuntu-latest
+    env:
+      CI_NAME: Xenial-Build
+      OS_NAME: ubuntu
+      OS_CODE_NAME: xenial
+      ROS_DISTRO: kinetic
+      ROS_REPO: main
+      BEFORE_BUILD_TARGET_WORKSPACE: './ci/.ci_install_phoxi_sdk_xenial.sh'
+      BEFORE_BUILD_TARGET_WORKSPACE_EMBED: 'export PHOXI_CONTROL_PATH=/opt/PhotoneoPhoXiControl-1.2.14'
+      NOT_TEST_BUILD: 'true'  # Don't run the tests because they depend on being connected to a scanner
+    steps:
+      - uses: actions/checkout@v2
+      - uses: 'ros-industrial/industrial_ci@master'
+        env: ${{env}}
