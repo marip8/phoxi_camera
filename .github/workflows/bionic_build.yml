@@ -1,0 +1,25 @@
+name: Bionic-Build
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  schedule:
+    - cron: '0 0 * * 0'
+
+jobs:
+  industrial_ci:
+    name: Melodic
+    runs-on: ubuntu-latest
+    env:
+      CI_NAME: Bionic-Build
+      OS_NAME: ubuntu
+      OS_CODE_NAME: bionic
+      BEFORE_BUILD_TARGET_WS: './ci/.ci_install_phoxi_sdk_bionic.sh'
+      ROS_DISTRO: melodic
+      ROS_REPO: main
+    steps:
+      - uses: actions/checkout@v2
+      - uses: 'ros-industrial/industrial_ci@master'
+        env: ${{env}}
