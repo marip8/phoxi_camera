@@ -10,7 +10,7 @@ on:
 
 jobs:
   industrial_ci:
-    name: Melodic
+    name: Xenial
     runs-on: ubuntu-latest
     env:
       CI_NAME: Xenial-Build

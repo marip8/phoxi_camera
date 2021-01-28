@@ -10,7 +10,7 @@ on:
 
 jobs:
   industrial_ci:
-    name: Melodic
+    name: Noetic
     runs-on: ubuntu-latest
     env:
       CI_NAME: Focal-Build
