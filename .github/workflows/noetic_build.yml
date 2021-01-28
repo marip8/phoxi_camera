@@ -19,7 +19,7 @@ jobs:
       ROS_DISTRO: noetic
       ROS_REPO: main
       BEFORE_BUILD_TARGET_WORKSPACE: './ci/.ci_install_phoxi_sdk_bionic.sh'
-      BEFORE_BUILD_TARGET_WORKSPACE_EMBED: 'export PHOXI_CONTROL_PATH=/opt/PhotoneoPhoXiControl-'
+      BEFORE_BUILD_TARGET_WORKSPACE_EMBED: 'export PHOXI_CONTROL_PATH=/opt/PhotoneoPhoXiControl-1.2.14'
     steps:
       - uses: actions/checkout@v2
       - uses: 'ros-industrial/industrial_ci@master'
